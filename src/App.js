@@ -1,25 +1,80 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react'
+import './App.css'
+import Zoom from './Zoom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const getUrlParam = () => {
+  var queryString = window.location.search
+  var urlParams = new URLSearchParams(queryString)
+  return Object.fromEntries(urlParams.entries()) || {}
 }
 
-export default App;
+function App () {
+  var [isJoin, join] = useState(false)
+  const [formData, setFormData] = useState({})
+  useEffect(() => {
+    const params = getUrlParam()
+    if (params.close) return typeof window !== 'undefined' && window.close()
+    if (params.number) join(true)
+    setFormData(params)
+  }, [])
+
+  const bindData = ({ target: { name, value } }) =>
+    setFormData(data => ({ ...data, [name]: value }))
+
+  const { name, number, passWord } = formData
+  return isJoin ? (
+    <Zoom name={name} number={number} passWord={passWord} />
+  ) : (
+    <div className='App'>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          join(true)
+        }}
+      >
+        <div className='flex'>
+          <input
+            name='email'
+            placeholder='email'
+            value={formData.email}
+            onChange={bindData}
+          />
+          <input
+            name='name'
+            placeholder='name'
+            value={formData.name}
+            onChange={bindData}
+          />
+          <input
+            name='number'
+            placeholder='number'
+            value={formData.number}
+            onChange={bindData}
+          />
+          <input
+            name='passWord'
+            placeholder='passWord'
+            value={formData.passWord}
+            onChange={bindData}
+          />
+        </div>
+        <div className='flex'>
+          <button type='submit'>Join Zoom Meeting - {formData?.number}</button>
+          <div
+            className='button'
+            onClick={() =>
+              window.open(
+                '?' + new URLSearchParams(formData).toString(),
+                '_blank'
+              )
+            }
+          >
+            Join Zoom in tab - {formData?.number}
+          </div>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+export default App
