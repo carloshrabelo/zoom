@@ -12,7 +12,7 @@ const makeMeetingConfig = ({
   passWord,
   role = 0,
   email,
-  lang = 'pt-PT',
+  lang = 'pt-BR',
   china = false
 }) => ({
   apiKey: API_KEY,
@@ -29,7 +29,8 @@ const makeMeetingConfig = ({
 const getSignature = data =>
   new Promise(resolve => {
     const meetingConfig = makeMeetingConfig(data)
-    const success = res => resolve({ ...meetingConfig, signature: res.result })
+    const success = res => resolve(res.result)
+    
     ZoomMtg.generateSignature({
       apiSecret: API_SECRET,
       meetingNumber: meetingConfig.meetingNumber,

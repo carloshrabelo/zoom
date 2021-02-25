@@ -1,30 +1,33 @@
 import ZoomMtg from '../lib/zoom'
-import { decode } from './helpers'
+
+const API_KEY = process.env.REACT_APP_API_KEY
 
 const JoinMeeting = ({
-  userName,
-  userEmail,
+  email,
+  name,
+  number,
+  passWord,
   signature,
   leaveUrl = '/index.html?close=true',
-  webEndpoint,
-  ...meetingConfig
-}) =>
-  ZoomMtg.init({
+  webEndpoint
+}) => {
+  ZoomMtg.i18n.load('pt-BR')
+  const success = () =>
+    ZoomMtg.join({
+      userName: name,
+      userEmail: email,
+      meetingNumber: number,
+      signature,
+      apiKey: API_KEY,
+      passWord
+    })
+
+  return ZoomMtg.init({
     leaveUrl,
     webEndpoint,
-    success: () => {
-      ZoomMtg.i18n.load(meetingConfig.lang)
-      ZoomMtg.i18n.reload(meetingConfig.lang)
-      ZoomMtg.join({
-        userName: decode(userName),
-        userEmail: decode(userEmail),
-        meetingNumber: meetingConfig.meetingNumber,
-        signature: signature,
-        apiKey: meetingConfig.apiKey,
-        passWord: meetingConfig.passWord
-      })
-    },
+    success,
     error: res => console.log(res)
   })
+}
 
 export default JoinMeeting

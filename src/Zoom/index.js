@@ -1,17 +1,17 @@
 import { useEffect } from 'react'
 
 const enterMeeting = ({ email, name, number, passWord }) => {
-  import('./assembly')
+  const config = { email, name, number, passWord }
+  
+  const assembly = import('./assembly')
   const joinMeeting = import('./joinMeeting')
   const getSignature = import('./getSignature') // Should be BE
-  Promise.all([joinMeeting, getSignature]).then(
+
+  Promise.all([joinMeeting, getSignature, assembly]).then(
     ([{ default: joinMeeting }, { default: getSignature }]) =>
-      getSignature({
-        email,
-        name,
-        number,
-        passWord
-      }).then(joinMeeting)
+      getSignature(config).then(signature =>
+        joinMeeting({ ...config, signature })
+      )
   )
 }
 

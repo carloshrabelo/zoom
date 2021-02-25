@@ -21,9 +21,9 @@ function App () {
   const bindData = ({ target: { name, value } }) =>
     setFormData(data => ({ ...data, [name]: value }))
 
-  const { name, number, passWord } = formData
+  const { email, name, number, passWord } = formData
   return isJoin ? (
-    <Zoom name={name} number={number} passWord={passWord} />
+    <Zoom name={name} number={number} passWord={passWord} email={email} />
   ) : (
     <div className='App'>
       <form
