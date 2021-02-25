@@ -1,8 +1,6 @@
-import ZoomMtg from '../lib/zoom'
-
 const API_KEY = process.env.REACT_APP_API_KEY
 
-const JoinMeeting = ({
+const JoinMeeting = async ({
   email,
   name,
   number,
@@ -11,6 +9,11 @@ const JoinMeeting = ({
   leaveUrl = '/index.html?close=true',
   webEndpoint
 }) => {
+  const [ZoomMtg] = await Promise.all([
+    import('../lib/zoom').then(r => r.default),
+    import('./assembly')
+  ])
+
   ZoomMtg.i18n.load('pt-BR')
   const success = () =>
     ZoomMtg.join({

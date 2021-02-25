@@ -1,43 +1,27 @@
-// Should be at BE
-
-import ZoomMtg from '../lib/zoom'
-import { b64EncodeUnicode } from './helpers'
+import crypto from 'crypto'
 
 const API_KEY = process.env.REACT_APP_API_KEY
 const API_SECRET = process.env.REACT_APP_API_SECRET
 
-const makeMeetingConfig = ({
-  number,
-  name,
-  passWord,
-  role = 0,
-  email,
-  lang = 'pt-BR',
-  china = false
-}) => ({
-  apiKey: API_KEY,
-  meetingNumber: parseInt(number),
-  userName: b64EncodeUnicode(name) || '',
-  userEmail: b64EncodeUnicode(email) || '',
-  passWord: passWord,
-  role: parseInt(role, 10),
-  lang: lang,
-  signature: '',
-  china
-})
+export const getSignature = data => {
+  const meetingNumber = parseInt(data.number)
+  const role = !data.role ? 0 : parseInt(data.role, 10)
+  const timestamp = new Date().getTime() - 30000
 
-const getSignature = data =>
-  new Promise(resolve => {
-    const meetingConfig = makeMeetingConfig(data)
-    const success = res => resolve(res.result)
-    
-    ZoomMtg.generateSignature({
-      apiSecret: API_SECRET,
-      meetingNumber: meetingConfig.meetingNumber,
-      apiKey: meetingConfig.apiKey,
-      role: meetingConfig.role,
-      success
-    })
-  })
+  const msg = Buffer.from(API_KEY + meetingNumber + timestamp + role).toString(
+    'base64'
+  )
+
+  const hash = crypto
+    .createHmac('sha256', API_SECRET)
+    .update(msg)
+    .digest('base64')
+
+  const signature = Buffer.from(
+    `${API_KEY}.${meetingNumber}.${timestamp}.${role}.${hash}`
+  ).toString('base64')
+
+  return Promise.resolve(signature)
+}
 
 export default getSignature
