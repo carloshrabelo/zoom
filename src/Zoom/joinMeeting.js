@@ -13,8 +13,9 @@ const JoinMeeting = async ({
     import('../lib/zoom').then(r => r.default),
     import('./assembly')
   ])
-
+  
   ZoomMtg.i18n.load('pt-BR')
+
   const success = () =>
     ZoomMtg.join({
       userName: name,
