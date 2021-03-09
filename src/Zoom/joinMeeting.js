@@ -14,7 +14,7 @@ const JoinMeeting = async ({
     import('./assembly')
   ])
   
-  ZoomMtg.i18n.load('pt-BR')
+  ZoomMtg.i18n.load('en-US')
 
   const success = () =>
     ZoomMtg.join({
