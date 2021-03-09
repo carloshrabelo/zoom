@@ -1,8 +1,8 @@
 const API_KEY = process.env.REACT_APP_API_KEY
 
 const JoinMeeting = async ({
-  email,
-  name,
+  email = '',
+  name = '',
   number,
   passWord,
   signature,
@@ -13,7 +13,7 @@ const JoinMeeting = async ({
     import('../lib/zoom').then(r => r.default),
     import('./assembly')
   ])
-  
+
   ZoomMtg.i18n.load('en-US')
 
   const success = () =>
